@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karline Mobilya — AI Görsel Üretici</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d0c09;--bg2:#161410;--bg3:#1e1b14;--card:#1a1713;
+  --border:rgba(255,255,255,0.07);--gold:#c9a84c;--gold2:#e8c97a;
+  --gold-dim:rgba(201,168,76,0.12);--text:#f0ece2;--muted:#7a7468;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes loadfill{0%{width:0%}70%{width:80%}100%{width:95%}}
+
+header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.logo{display:flex;align-items:center;gap:12px;}
+.lmark{width:34px;height:34px;background:var(--gold);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:17px;font-weight:900;color:#0d0c09;}
+.lname{font-family:'Playfair Display',serif;font-size:17px;color:var(--gold2);}
+.lsub{font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
+.badge{font-size:11px;color:var(--gold);border:1px solid rgba(201,168,76,.3);padding:4px 10px;border-radius:4px;}
+.status{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);}
+.dot{width:7px;height:7px;border-radius:50%;background:#4caf50;flex-shrink:0;}
+.dot.busy{background:var(--gold);animation:pulse 1s infinite;}
+.dot.err{background:#e53935;}
+
+.main{max-width:1100px;margin:0 auto;padding:32px 20px;display:grid;grid-template-columns:360px 1fr;gap:24px;}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:18px;}
+.ptitle{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold2);}
+.psub{font-size:12px;color:var(--muted);margin-top:3px;}
+label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px;}
+select,textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:10px 13px;outline:none;transition:border-color .2s;}
+select:focus,textarea:focus{border-color:var(--gold);}
+textarea{resize:vertical;min-height:96px;line-height:1.6;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.presets{display:flex;flex-wrap:wrap;gap:6px;}
+.preset{font-size:11px;padding:5px 11px;border-radius:5px;background:var(--bg3);border:1px solid var(--border);color:var(--text);cursor:pointer;transition:all .15s;}
+.preset:hover,.preset.on{background:var(--gold-dim);border-color:var(--gold);color:var(--gold2);}
+.trow{display:flex;align-items:center;justify-content:space-between;}
+.tgl{position:relative;width:40px;height:22px;flex-shrink:0;}
+.tgl input{opacity:0;width:0;height:0;}
+.tgls{position:absolute;inset:0;background:var(--bg3);border:1px solid var(--border);border-radius:11px;cursor:pointer;transition:.2s;}
+.tgls::before{content:'';position:absolute;width:16px;height:16px;left:2px;top:2px;background:var(--muted);border-radius:50%;transition:.2s;}
+input:checked+.tgls{background:var(--gold-dim);border-color:var(--gold);}
+input:checked+.tgls::before{transform:translateX(18px);background:var(--gold);}
+.gbtn{width:100%;padding:14px;background:var(--gold);color:#0d0c09;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:background .2s,transform .1s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.gbtn:hover:not(:disabled){background:var(--gold2);}
+.gbtn:disabled{opacity:.4;cursor:not-allowed;}
+.divider{height:1px;background:var(--border);}
+
+.outpanel{display:flex;flex-direction:column;gap:18px;}
+.outh{display:flex;align-items:center;justify-content:space-between;}
+.outtitle{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold2);}
+.imgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.icard{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:relative;aspect-ratio:9/16;cursor:pointer;transition:border-color .2s,transform .15s;}
+.icard:hover{border-color:var(--gold);transform:scale(1.01);}
+.icard img{width:100%;height:100%;object-fit:cover;display:block;}
+.ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 50%);opacity:0;transition:opacity .2s;display:flex;align-items:flex-end;padding:14px;gap:8px;}
+.icard:hover .ov{opacity:1;}
+.ovbtn{padding:7px 14px;font-size:12px;font-weight:600;border-radius:6px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.dl{background:var(--gold);color:#0d0c09;}
+.vw{background:rgba(255,255,255,.15);color:white;}
+
+.empty{grid-column:1/-1;min-height:300px;background:var(--card);border:1px dashed rgba(201,168,76,.2);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
+.eico{font-size:44px;opacity:.3;}
+.etxt{font-size:13px;color:var(--muted);text-align:center;max-width:280px;line-height:1.6;}
+.lwrap{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:18px;padding:60px 0;}
+.lbar{width:260px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.lfill{height:100%;background:var(--gold);border-radius:2px;animation:loadfill 25s linear forwards;}
+.ltxt{font-size:13px;color:var(--muted);animation:pulse 1.5s infinite;}
+.errbox{grid-column:1/-1;background:rgba(229,57,53,.08);border:1px solid rgba(229,57,53,.25);border-radius:10px;padding:18px 20px;font-size:13px;color:#ff8a80;line-height:1.7;}
+
+.hsec{display:flex;flex-direction:column;gap:8px;}
+.hlbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.hrow{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;}
+.hth{width:60px;min-width:60px;aspect-ratio:9/16;border-radius:6px;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:border-color .15s;flex-shrink:0;}
+.hth:hover{border-color:var(--gold);}
+.hth img{width:100%;height:100%;object-fit:cover;}
+
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:1000;align-items:center;justify-content:center;}
+.modal.open{display:flex;}
+.modal img{max-height:90vh;max-width:90vw;border-radius:10px;}
+.mx{position:absolute;top:18px;right:22px;font-size:26px;color:white;cursor:pointer;background:none;border:none;line-height:1;}
+
+@media(max-width:780px){.main{grid-template-columns:1fr;}.imgrid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="lmark">K</div>
+    <div>
+      <div class="lname">Karline Mobilya</div>
+      <div class="lsub">AI Görsel Üretici</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div class="status"><div class="dot" id="dot"></div><span id="stxt">Hazır</span></div>
+    <div class="badge">✦ Flux AI</div>
+  </div>
+</header>
+
+<div class="main">
+  <div class="panel">
+    <div>
+      <div class="ptitle">Görsel Üret</div>
+      <div class="psub">Replicate Flux · Gerçek AI kalitesi</div>
+    </div>
+
+    <div>
+      <label>Görsel Türü</label>
+      <select id="tur" onchange="onTur()">
+        <option value="ozel">🎉 Özel Gün / Bayram</option>
+        <option value="urun">🪑 Ürün Tanıtımı</option>
+        <option value="atolye">🔨 Atölye / Üretim</option>
+        <option value="kampanya">📢 Kampanya</option>
+        <option value="kurumsal">🏢 Kurumsal</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Hızlı Seçim</label>
+      <div class="presets" id="presets"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <label>Görsel Açıklaması</label>
+      <textarea id="prompt" rows="4" placeholder="Ne görmek istiyorsunuz?"></textarea>
+    </div>
+
+    <div class="frow">
+      <div>
+        <label>Format</label>
+        <select id="fmt">
+          <option value="9:16">Story 9:16</option>
+          <option value="1:1">Kare 1:1</option>
+          <option value="4:5">Feed 4:5</option>
+        </select>
+      </div>
+      <div>
+        <label>Stil</label>
+        <select id="stil" onchange="rebuild()">
+          <option value="professional graphic design poster, vibrant colors, high quality illustration">Profesyonel Poster</option>
+          <option value="watercolor illustration, artistic, beautiful soft colors, painterly">Suluboya</option>
+          <option value="modern minimalist design, clean elegant, white space">Minimalist</option>
+          <option value="dramatic cinematic lighting, photorealistic, ultra detailed photography">Sinematik</option>
+          <option value="flat design illustration, bold colors, geometric shapes, vector art">Flat İllüstrasyon</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="trow">
+      <div>
+        <div style="font-size:13px;font-weight:500;color:var(--text)">Marka Bilgisi Ekle</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">KARLİNE MOBİLYA · Karaman</div>
+      </div>
+      <label class="tgl">
+        <input type="checkbox" id="marka" checked onchange="rebuild()">
+        <span class="tgls"></span>
+      </label>
+    </div>
+
+    <button class="gbtn" id="gbtn" onclick="generate()">
+      <span>✦</span> Görsel Üret
+    </button>
+
+    <div style="font-size:11px;color:var(--muted);text-align:center">Görsel başına ~₺0.10 · Flux Schnell modeli</div>
+  </div>
+
+  <div class="outpanel">
+    <div class="outh">
+      <div class="outtitle">Üretilen Görseller</div>
+      <div id="cnt" style="font-size:12px;color:var(--muted)"></div>
+    </div>
+    <div class="imgrid" id="grid">
+      <div class="empty">
+        <div class="eico">🎨</div>
+        <div class="etxt">Sol panelden tür ve preset seçin,<br>"Görsel Üret" butonuna basın</div>
+      </div>
+    </div>
+    <div id="hsec" style="display:none" class="hsec">
+      <div class="hlbl">Önceki Görseller</div>
+      <div class="hrow" id="hrow"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal" onclick="closeModal()">
+  <button class="mx" onclick="closeModal()">✕</button>
+  <img id="mimg" src="" alt="">
+</div>
+
+<script>
+const TOKEN = "r8_dbosPC9BT3WvFpb8hTKmYI6rzrq28LE2TH7QX";
+let hist=[], total=0, activeP='';
+
+const PRESETS={
+  ozel:["19 Mayıs 🇹🇷","Ramazan Bayramı 🌙","Kurban Bayramı 🌿","Yılbaşı 🎄","29 Ekim 🇹🇷","Anneler Günü 🌷","23 Nisan 🎈"],
+  urun:["Mutfak Dolabı 🍳","Gardırop 👗","TV Ünitesi 📺","Ranza 🛏️","Kitaplık 📚","Dolap 🚪"],
+  atolye:["Üretim Süreci ⚙️","Usta Çalışırken 🔨","Ahşap & Talaş 🪵","Montaj 🔧"],
+  kampanya:["Yaz İndirimi ☀️","Sezon Kampanyası 🎁","Ücretsiz Keşif 🏠","Hızlı Teslim 🚚"],
+  kurumsal:["Firma Tanıtımı 🏢","Karaman'da Üretim 📍","Kalite & Güven ✅"]
+};
+
+const TMPL={
+  ozel: p=>`${p} Turkish national holiday celebration poster design, Turkish flag red white crescent and star motifs, festive atmosphere with dramatic lighting`,
+  urun: p=>`${p} modern luxury furniture product showcase, elegant interior design, professional studio photography lighting, premium advertisement`,
+  atolye: p=>`carpentry workshop scene ${p}, craftsman working with wood, warm workshop lighting, sawdust particles, authentic artisan atmosphere`,
+  kampanya: p=>`furniture store ${p} promotional poster, bold modern typography, vibrant eye-catching colors`,
+  kurumsal: p=>`furniture company ${p}, professional corporate brand imagery, modern architecture, quality craftsmanship`
+};
+
+function onTur(){
+  const t=document.getElementById('tur').value;
+  const pc=document.getElementById('presets');
+  pc.innerHTML='';
+  (PRESETS[t]||[]).forEach((p,i)=>{
+    const b=document.createElement('button');
+    b.className='preset'+(i===0?' on':'');
+    b.textContent=p;
+    if(i===0) activeP=p;
+    b.onclick=()=>{
+      pc.querySelectorAll('.preset').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on'); activeP=p; rebuild();
+    };
+    pc.appendChild(b);
+  });
+  rebuild();
+}
+
+function rebuild(){
+  const t=document.getElementById('tur').value;
+  const marka=document.getElementById('marka').checked;
+  const stil=document.getElementById('stil').value;
+  const fn=TMPL[t]||(p=>p);
+  let p=fn(activeP)+', '+stil+', ultra high quality, 4k, sharp details, no watermark';
+  if(marka) p+=', include subtle text "KARLİNE MOBİLYA" and "@karlinemobilya" at bottom of image';
+  document.getElementById('prompt').value=p;
+}
+
+async function poll(id){
+  for(let i=0;i<60;i++){
+    await new Promise(r=>setTimeout(r,2000));
+    const r=await fetch(`https://api.replicate.com/v1/predictions/${id}`,{
+      headers:{Authorization:`Token ${TOKEN}`}
+    });
+    const d=await r.json();
+    if(d.status==='succeeded') return Array.isArray(d.output)?d.output:[d.output];
+    if(d.status==='failed'||d.status==='canceled') throw new Error(d.error||'Üretim başarısız');
+  }
+  throw new Error('Zaman aşımı — lütfen tekrar deneyin');
+}
+
+async function generate(){
+  const prompt=document.getElementById('prompt').value.trim();
+  if(!prompt){alert('Açıklama boş olamaz');return;}
+  const fmt=document.getElementById('fmt').value;
+  const btn=document.getElementById('gbtn');
+  const grid=document.getElementById('grid');
+  const dot=document.getElementById('dot');
+  const stxt=document.getElementById('stxt');
+
+  btn.disabled=true;
+  btn.innerHTML='<div style="width:16px;height:16px;border:2px solid #0d0c09;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite"></div>&nbsp;Üretiliyor...';
+  dot.className='dot busy'; stxt.textContent='Görsel üretiliyor...';
+  grid.innerHTML=`<div class="lwrap"><div style="font-size:36px">🎨</div><div class="lbar"><div class="lfill"></div></div><div class="ltxt">Flux AI görselinizi hazırlıyor... (15-30 sn)</div></div>`;
+
+  try{
+    const resp=await fetch('https://api.replicate.com/v1/models/black-forest-labs/flux-schnell/predictions',{
+      method:'POST',
+      headers:{
+        'Authorization':`Token ${TOKEN}`,
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({
+        input:{
+          prompt,
+          aspect_ratio:fmt,
+          output_format:'webp',
+          output_quality:95,
+          num_outputs:1,
+          go_fast:true
+        }
+      })
+    });
+
+    if(!resp.ok){
+      const e=await resp.json().catch(()=>({detail:`HTTP ${resp.status}`}));
+      throw new Error(e.detail||e.error||`API Hatası: ${resp.status}`);
+    }
+
+    const pred=await resp.json();
+    let urls=[];
+    if(pred.output){
+      urls=Array.isArray(pred.output)?pred.output:[pred.output];
+    } else {
+      stxt.textContent='İşleniyor...';
+      urls=await poll(pred.id);
+    }
+
+    grid.innerHTML='';
+    urls.forEach((url,i)=>{
+      hist.unshift(url); total++;
+      const c=document.createElement('div');
+      c.className='icard';
+      c.innerHTML=`<img src="${url}" alt="Görsel ${i+1}" loading="lazy">
+        <div class="ov">
+          <button class="ovbtn dl" onclick="dlImg(event,'${url}',${total})">⬇ İndir</button>
+          <button class="ovbtn vw" onclick="openModal(event,'${url}')">🔍 Büyüt</button>
+        </div>`;
+      grid.appendChild(c);
+    });
+
+    document.getElementById('cnt').textContent=`Toplam ${total} görsel`;
+    dot.className='dot'; stxt.textContent=`${urls.length} görsel hazır ✓`;
+    updateHist();
+
+  } catch(e){
+    grid.innerHTML=`<div class="errbox">
+      <strong>⚠️ Hata:</strong> ${e.message}<br><br>
+      <span style="color:var(--muted);font-size:12px">
+        Bu uygulamanın GitHub Pages veya bir web sunucusundan açılması gerekiyor.<br>
+        Dosyayı doğrudan (file://) açarsanız CORS hatası alırsınız.
+      </span>
+    </div>`;
+    dot.className='dot err'; stxt.textContent='Hata';
+  }
+
+  btn.disabled=false;
+  btn.innerHTML='<span>✦</span> Görsel Üret';
+}
+
+function updateHist(){
+  if(!hist.length) return;
+  document.getElementById('hsec').style.display='flex';
+  document.getElementById('hrow').innerHTML=hist.slice(0,12).map(u=>
+    `<div class="hth" onclick="openModal(event,'${u}')"><img src="${u}" loading="lazy"></div>`
+  ).join('');
+}
+
+function openModal(e,url){e&&e.stopPropagation();document.getElementById('mimg').src=url;document.getElementById('modal').classList.add('open');}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+
+async function dlImg(e,url,n){
+  e.stopPropagation();
+  try{
+    const r=await fetch(url);
+    const b=await r.blob();
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(b);
+    a.download=`karline_mobilya_${n}.webp`;
+    a.click();
+  }catch{window.open(url,'_blank');}
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+onTur();
+</script>
+</body>
+</html>
