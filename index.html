@@ -255,7 +255,7 @@ async function generate(){
       hist.unshift(url); total++;
       const c=document.createElement('div');
       c.className='icard';
-      c.innerHTML=`<img src="${url}" alt="Görsel ${i+1}" loading="lazy">
+      c.innerHTML=`<img src="${url}" alt="Görsel ${i+1}" crossorigin="anonymous" loading="lazy">
         <div class="ov">
           <button class="ovbtn dl" onclick="dlImg(event,'${url}',${total})">⬇ İndir</button>
           <button class="ovbtn vw" onclick="openModal(event,'${url}')">🔍 Büyüt</button>
