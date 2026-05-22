@@ -6,17 +6,12 @@
 <title>Karline Mobilya — AI Görsel Üretici</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#0d0c09;--bg2:#161410;--bg3:#1e1b14;--card:#1a1713;
-  --border:rgba(255,255,255,0.07);--gold:#c9a84c;--gold2:#e8c97a;
-  --gold-dim:rgba(201,168,76,0.12);--text:#f0ece2;--muted:#7a7468;
-}
+:root{--bg:#0d0c09;--bg2:#161410;--bg3:#1e1b14;--card:#1a1713;--border:rgba(255,255,255,0.07);--gold:#c9a84c;--gold2:#e8c97a;--gold-dim:rgba(201,168,76,0.12);--text:#f0ece2;--muted:#7a7468;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
 @keyframes loadfill{0%{width:0%}70%{width:80%}100%{width:95%}}
-
 header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
 .logo{display:flex;align-items:center;gap:12px;}
 .lmark{width:34px;height:34px;background:var(--gold);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:17px;font-weight:900;color:#0d0c09;}
@@ -27,7 +22,6 @@ header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28p
 .dot{width:7px;height:7px;border-radius:50%;background:#4caf50;flex-shrink:0;}
 .dot.busy{background:var(--gold);animation:pulse 1s infinite;}
 .dot.err{background:#e53935;}
-
 .main{max-width:1100px;margin:0 auto;padding:32px 20px;display:grid;grid-template-columns:360px 1fr;gap:24px;}
 .panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:18px;}
 .ptitle{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold2);}
@@ -51,7 +45,6 @@ input:checked+.tgls::before{transform:translateX(18px);background:var(--gold);}
 .gbtn:hover:not(:disabled){background:var(--gold2);}
 .gbtn:disabled{opacity:.4;cursor:not-allowed;}
 .divider{height:1px;background:var(--border);}
-
 .outpanel{display:flex;flex-direction:column;gap:18px;}
 .outh{display:flex;align-items:center;justify-content:space-between;}
 .outtitle{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold2);}
@@ -64,7 +57,6 @@ input:checked+.tgls::before{transform:translateX(18px);background:var(--gold);}
 .ovbtn{padding:7px 14px;font-size:12px;font-weight:600;border-radius:6px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
 .dl{background:var(--gold);color:#0d0c09;}
 .vw{background:rgba(255,255,255,.15);color:white;}
-
 .empty{grid-column:1/-1;min-height:300px;background:var(--card);border:1px dashed rgba(201,168,76,.2);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
 .eico{font-size:44px;opacity:.3;}
 .etxt{font-size:13px;color:var(--muted);text-align:center;max-width:280px;line-height:1.6;}
@@ -73,24 +65,20 @@ input:checked+.tgls::before{transform:translateX(18px);background:var(--gold);}
 .lfill{height:100%;background:var(--gold);border-radius:2px;animation:loadfill 25s linear forwards;}
 .ltxt{font-size:13px;color:var(--muted);animation:pulse 1.5s infinite;}
 .errbox{grid-column:1/-1;background:rgba(229,57,53,.08);border:1px solid rgba(229,57,53,.25);border-radius:10px;padding:18px 20px;font-size:13px;color:#ff8a80;line-height:1.7;}
-
 .hsec{display:flex;flex-direction:column;gap:8px;}
 .hlbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
 .hrow{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;}
 .hth{width:60px;min-width:60px;aspect-ratio:9/16;border-radius:6px;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:border-color .15s;flex-shrink:0;}
 .hth:hover{border-color:var(--gold);}
 .hth img{width:100%;height:100%;object-fit:cover;}
-
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:1000;align-items:center;justify-content:center;}
 .modal.open{display:flex;}
 .modal img{max-height:90vh;max-width:90vw;border-radius:10px;}
 .mx{position:absolute;top:18px;right:22px;font-size:26px;color:white;cursor:pointer;background:none;border:none;line-height:1;}
-
 @media(max-width:780px){.main{grid-template-columns:1fr;}.imgrid{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
-
 <header>
   <div class="logo">
     <div class="lmark">K</div>
@@ -104,14 +92,12 @@ input:checked+.tgls::before{transform:translateX(18px);background:var(--gold);}
     <div class="badge">✦ Flux AI</div>
   </div>
 </header>
-
 <div class="main">
   <div class="panel">
     <div>
       <div class="ptitle">Görsel Üret</div>
-      <div class="psub">Replicate Flux · Gerçek AI kalitesi</div>
+      <div class="psub">Cloudflare + Replicate Flux</div>
     </div>
-
     <div>
       <label>Görsel Türü</label>
       <select id="tur" onchange="onTur()">
@@ -122,19 +108,15 @@ input:checked+.tgls::before{transform:translateX(18px);background:var(--gold);}
         <option value="kurumsal">🏢 Kurumsal</option>
       </select>
     </div>
-
     <div>
       <label>Hızlı Seçim</label>
       <div class="presets" id="presets"></div>
     </div>
-
     <div class="divider"></div>
-
     <div>
       <label>Görsel Açıklaması</label>
       <textarea id="prompt" rows="4" placeholder="Ne görmek istiyorsunuz?"></textarea>
     </div>
-
     <div class="frow">
       <div>
         <label>Format</label>
@@ -155,7 +137,6 @@ input:checked+.tgls::before{transform:translateX(18px);background:var(--gold);}
         </select>
       </div>
     </div>
-
     <div class="trow">
       <div>
         <div style="font-size:13px;font-weight:500;color:var(--text)">Marka Bilgisi Ekle</div>
@@ -166,14 +147,11 @@ input:checked+.tgls::before{transform:translateX(18px);background:var(--gold);}
         <span class="tgls"></span>
       </label>
     </div>
-
     <button class="gbtn" id="gbtn" onclick="generate()">
       <span>✦</span> Görsel Üret
     </button>
-
-    <div style="font-size:11px;color:var(--muted);text-align:center">Görsel başına ~₺0.10 · Flux Schnell modeli</div>
+    <div style="font-size:11px;color:var(--muted);text-align:center">Görsel başına ~₺0.10 · Flux Schnell</div>
   </div>
-
   <div class="outpanel">
     <div class="outh">
       <div class="outtitle">Üretilen Görseller</div>
@@ -182,7 +160,7 @@ input:checked+.tgls::before{transform:translateX(18px);background:var(--gold);}
     <div class="imgrid" id="grid">
       <div class="empty">
         <div class="eico">🎨</div>
-        <div class="etxt">Sol panelden tür ve preset seçin,<br>"Görsel Üret" butonuna basın</div>
+        <div class="etxt">Sol panelden tür seçin ve<br>"Görsel Üret" butonuna basın</div>
       </div>
     </div>
     <div id="hsec" style="display:none" class="hsec">
@@ -191,14 +169,12 @@ input:checked+.tgls::before{transform:translateX(18px);background:var(--gold);}
     </div>
   </div>
 </div>
-
 <div class="modal" id="modal" onclick="closeModal()">
   <button class="mx" onclick="closeModal()">✕</button>
   <img id="mimg" src="" alt="">
 </div>
-
 <script>
-const TOKEN = "r8_dbosPC9BT3WvFpb8hTKmYI6rzrq28LE2TH7QX";
+const WORKER = "https://karline-api.oguz-tamac.workers.dev";
 let hist=[], total=0, activeP='';
 
 const PRESETS={
@@ -210,11 +186,11 @@ const PRESETS={
 };
 
 const TMPL={
-  ozel: p=>`${p} Turkish national holiday celebration poster design, Turkish flag red white crescent and star motifs, festive atmosphere with dramatic lighting`,
-  urun: p=>`${p} modern luxury furniture product showcase, elegant interior design, professional studio photography lighting, premium advertisement`,
-  atolye: p=>`carpentry workshop scene ${p}, craftsman working with wood, warm workshop lighting, sawdust particles, authentic artisan atmosphere`,
+  ozel: p=>`${p} Turkish national holiday celebration poster design, Turkish flag red white crescent star motifs, festive dramatic lighting`,
+  urun: p=>`${p} modern luxury furniture product showcase, elegant interior, professional studio lighting, premium advertisement`,
+  atolye: p=>`carpentry workshop ${p}, craftsman working with wood, warm workshop lighting, sawdust particles, artisan atmosphere`,
   kampanya: p=>`furniture store ${p} promotional poster, bold modern typography, vibrant eye-catching colors`,
-  kurumsal: p=>`furniture company ${p}, professional corporate brand imagery, modern architecture, quality craftsmanship`
+  kurumsal: p=>`furniture company ${p}, professional corporate brand imagery, modern quality craftsmanship`
 };
 
 function onTur(){
@@ -241,22 +217,11 @@ function rebuild(){
   const stil=document.getElementById('stil').value;
   const fn=TMPL[t]||(p=>p);
   let p=fn(activeP)+', '+stil+', ultra high quality, 4k, sharp details, no watermark';
-  if(marka) p+=', include subtle text "KARLİNE MOBİLYA" and "@karlinemobilya" at bottom of image';
+  if(marka) p+=', poster includes text "KARLİNE MOBİLYA" brand and "@karlinemobilya Karaman" at bottom';
   document.getElementById('prompt').value=p;
 }
 
-async function poll(id){
-  for(let i=0;i<60;i++){
-    await new Promise(r=>setTimeout(r,2000));
-    const r=await fetch(`https://api.replicate.com/v1/predictions/${id}`,{
-      headers:{Authorization:`Token ${TOKEN}`}
-    });
-    const d=await r.json();
-    if(d.status==='succeeded') return Array.isArray(d.output)?d.output:[d.output];
-    if(d.status==='failed'||d.status==='canceled') throw new Error(d.error||'Üretim başarısız');
-  }
-  throw new Error('Zaman aşımı — lütfen tekrar deneyin');
-}
+document.getElementById('stil').onchange=rebuild;
 
 async function generate(){
   const prompt=document.getElementById('prompt').value.trim();
@@ -273,37 +238,17 @@ async function generate(){
   grid.innerHTML=`<div class="lwrap"><div style="font-size:36px">🎨</div><div class="lbar"><div class="lfill"></div></div><div class="ltxt">Flux AI görselinizi hazırlıyor... (15-30 sn)</div></div>`;
 
   try{
-    const resp=await fetch('https://api.replicate.com/v1/models/black-forest-labs/flux-schnell/predictions',{
+    const resp=await fetch(WORKER,{
       method:'POST',
-      headers:{
-        'Authorization':`Token ${TOKEN}`,
-        'Content-Type':'application/json'
-      },
-      body:JSON.stringify({
-        input:{
-          prompt,
-          aspect_ratio:fmt,
-          output_format:'webp',
-          output_quality:95,
-          num_outputs:1,
-          go_fast:true
-        }
-      })
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({prompt, aspect_ratio:fmt})
     });
 
-    if(!resp.ok){
-      const e=await resp.json().catch(()=>({detail:`HTTP ${resp.status}`}));
-      throw new Error(e.detail||e.error||`API Hatası: ${resp.status}`);
-    }
+    if(!resp.ok) throw new Error(`Sunucu hatası: ${resp.status}`);
+    const data=await resp.json();
+    if(data.error) throw new Error(data.error);
 
-    const pred=await resp.json();
-    let urls=[];
-    if(pred.output){
-      urls=Array.isArray(pred.output)?pred.output:[pred.output];
-    } else {
-      stxt.textContent='İşleniyor...';
-      urls=await poll(pred.id);
-    }
+    const urls=Array.isArray(data.urls)?data.urls:[data.urls];
 
     grid.innerHTML='';
     urls.forEach((url,i)=>{
@@ -322,14 +267,8 @@ async function generate(){
     dot.className='dot'; stxt.textContent=`${urls.length} görsel hazır ✓`;
     updateHist();
 
-  } catch(e){
-    grid.innerHTML=`<div class="errbox">
-      <strong>⚠️ Hata:</strong> ${e.message}<br><br>
-      <span style="color:var(--muted);font-size:12px">
-        Bu uygulamanın GitHub Pages veya bir web sunucusundan açılması gerekiyor.<br>
-        Dosyayı doğrudan (file://) açarsanız CORS hatası alırsınız.
-      </span>
-    </div>`;
+  }catch(e){
+    grid.innerHTML=`<div class="errbox"><strong>⚠️ Hata:</strong> ${e.message}</div>`;
     dot.className='dot err'; stxt.textContent='Hata';
   }
 
